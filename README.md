@@ -60,3 +60,10 @@ Neste algoritmo foi implementado um exemplo de ray casting de esferas 3D, desenh
 - Tempo de renderização: `43.13s`
 
 ![Exemplo 3](raycaster/img/raycaster3.png)
+
+#### Teste 4 (com brilho e mais uma esfera na cena):
+
+- Resolução da tela: `800x800 pixels`
+- Tempo de renderização: `68.23s`
+
+![Exemplo 4](raycaster/img/raycaster4.png)

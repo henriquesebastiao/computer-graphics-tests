@@ -19,20 +19,20 @@ tqdm = "^4.66.2"
 pytest = "^8.1.1"
 pytest-cov = "^5.0.0"
 taskipy = "^1.12.2"
-blue = "^0.9.1"
 ruff = "^0.3.7"
 isort = "^5.13.2"
+black = "^24.4.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.ruff]
-line-length = 79
+line-length = 90
 
 [tool.isort]
 profile = "black"
-line_length = 79
+line_length = 90
 
 [tool.coverage.run]
 branch = true
@@ -44,5 +44,5 @@ addopts = "--doctest-modules"
 python_files = "test.py tests.py test_*.py tests_*.py *_test.py *_tests.py"
 
 [tool.taskipy.tasks]
-lint = "ruff check . && blue --check . --diff && isort --check --diff ."
-format = "blue .  && isort ."
+lint = "ruff check . && black --check -S . --diff && isort --check --diff ."
+format = "black . -S  && isort ."

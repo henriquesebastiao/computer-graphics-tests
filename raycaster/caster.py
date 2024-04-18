@@ -11,10 +11,11 @@ screen = np.zeros((h, w, 3))
 
 
 class Esfera:
-    def __init__(self, raio, centro, cor):
+    def __init__(self, raio, centro, cor, brilho):
         self.raio = raio
         self.centro = centro
         self.cor = cor
+        self.brilho = brilho
 
 
 class LuzPontual:
@@ -37,22 +38,33 @@ class LuzDirecional:
         self.tipo = 'direcional'
 
 
-e1 = Esfera(1, centro=np.array((0, -1, 5)), cor=np.array((1, 0, 0)))
-e2 = Esfera(5000, centro=np.array((0, -5001, 0)), cor=np.array((0, 1, 0)))
+e1 = Esfera(1, centro=np.array((0, -1, 5)), cor=np.array((1, 0, 0)), brilho=500)
+e2 = Esfera(5000, centro=np.array((0, -5001, 0)), cor=np.array((0, 1, 0)), brilho=10)
+e3 = Esfera(raio=1, centro=np.array((1, 1, 7)), cor=np.array((0, 0, 1)), brilho=20)
 
 luz_pontual = LuzPontual(intensidade=0.7, origem=np.array((-1, 2, 5)))
 luz_ambiente = LuzAmbiente(0.1)
 luz_direcional = LuzDirecional(intensidade=0.2, direcao=np.array((1, 4, 4)))
 
-esferas_cena = [e1, e2]
+esferas_cena = [e1, e2, e3]
 luzes_cena = [luz_pontual, luz_ambiente, luz_direcional]
+
+
+def retornar_vetor_refletido(vetor_incidente, vetor_normal):
+    return 2 * vetor_normal * dot(vetor_incidente, vetor_normal) - vetor_incidente
 
 
 def calcular_luz(p, esfera, luzes_cena):
     vetor_normal = p - esfera.centro
     vetor_normal_tamanho = dot(vetor_normal, vetor_normal) ** 0.5
     vetor_normal_normalizado = vetor_normal / vetor_normal_tamanho
+
+    vetor_olho = origem - ponto
+    vetor_olho_tamanho = dot(vetor_olho, vetor_olho) ** 0.5
+    vetor_olho_normalizado = vetor_olho / vetor_olho_tamanho
+
     luz_final = 0
+
     for luz in luzes_cena:
         if luz.tipo == 'ambiente':
             luz_final += luz.intensidade
@@ -66,8 +78,22 @@ def calcular_luz(p, esfera, luzes_cena):
                 vetor_l_tamanho = dot(vetor_l, vetor_l) ** 0.5
                 vetor_l_normalizado = vetor_l / vetor_l_tamanho
                 n_dot_l = dot(vetor_normal_normalizado, vetor_l_normalizado)
-                luz_pontual = luz.intensidade * n_dot_l
-                luz_final += luz_pontual
+                if n_dot_l > 0:
+                    luz_pontual = luz.intensidade * n_dot_l
+                    luz_final += luz_pontual
+
+                if (
+                    dot(
+                        vetor_olho,
+                        retornar_vetor_refletido(vetor_l, vetor_normal),
+                    )
+                    > 0
+                ):
+                    r = retornar_vetor_refletido(vetor_l, vetor_normal)
+                    r_normalizado = r / dot(r, r) ** 0.5
+                    olho_dot_r = dot(vetor_olho_normalizado, r_normalizado)
+                    intensidade_brilho = luz.intensidade * (olho_dot_r**esfera.brilho)
+                    luz_final += intensidade_brilho
 
         if luz.tipo == 'direcional':
             vetor_l = luz.direcao
@@ -82,8 +108,22 @@ def calcular_luz(p, esfera, luzes_cena):
                 vetor_l_tamanho = dot(vetor_l, vetor_l) ** 0.5
                 vetor_l_normalizado = vetor_l / vetor_l_tamanho
                 n_dot_l = dot(vetor_normal_normalizado, vetor_l_normalizado)
-                luz_direcional = luz.intensidade * n_dot_l
-                luz_final += luz_direcional
+                if n_dot_l > 0:
+                    luz_direcional = luz.intensidade * n_dot_l
+                    luz_final += luz_direcional
+
+                if (
+                    dot(
+                        vetor_olho,
+                        retornar_vetor_refletido(vetor_l, vetor_normal),
+                    )
+                    > 0
+                ):
+                    r = retornar_vetor_refletido(vetor_l, vetor_normal)
+                    r_normalizado = r / dot(r, r) ** 0.5
+                    olho_dot_r = dot(vetor_olho_normalizado, r_normalizado)
+                    intensidade_brilho = luz.intensidade * (olho_dot_r**esfera.brilho)
+                    luz_final += intensidade_brilho
 
         return np.clip(luz_final, 0, 1)
 
