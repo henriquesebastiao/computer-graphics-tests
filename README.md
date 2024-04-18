@@ -36,6 +36,9 @@ O Ray casting é uma técnica que permite remover ou ignorar as superfícies esc
 
 Leia mais em: [Ray casting (Wikipedia)](https://pt.wikipedia.org/wiki/Ray_casting)
 
+Os algoritmos de ray tracing de esferas 3D aqui presentes são baseados na playlist [Curso Básico de Python + Computação Gráfica](https://youtube.com/playlist?list=PL1YmAcaDZ1rNc01h3nKU0HNYktxOyRkqb&si=EEtRwCtJwoPqNDwl) no YouTube (autor desconhecido).
+Seja quem for, muito obrigado por compartilhar o conhecimento ;)
+
 ### Exemplo 1:
 
 Neste algoritmo foi implementado um exemplo de ray casting de esferas 3D, desenhando duas esferas uma maior (cor verde), outra menor (cor vermelha) sendo interceptadas pela esfera maior, e um plano de fundo (cor preta).
