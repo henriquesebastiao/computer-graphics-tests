@@ -46,7 +46,3 @@ python_files = "test.py tests.py test_*.py tests_*.py *_test.py *_tests.py"
 [tool.taskipy.tasks]
 lint = "ruff check . && blue --check . --diff && isort --check --diff ."
 format = "blue .  && isort ."
-doc = "mkdocs serve"
-pre_test = "task lint"
-test = "pytest -s -x --cov=<YOUR-PROJECT> -vv"
-post_test = "coverage run -m pytest && coverage html"
